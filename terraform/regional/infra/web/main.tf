@@ -17,8 +17,6 @@ resource "aws_launch_template" "book-buddy" {
 
 resource "aws_autoscaling_group" "book-buddy" {
   name = "book-buddy"
-  // We can expand this further later
-  availability_zones = [ data.aws_subnet.default.availability_zone ]
   max_size           = 1
   min_size           = 0
   desired_capacity   = 0
