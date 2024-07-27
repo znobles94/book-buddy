@@ -10,10 +10,28 @@ variable "deletion_protection" {
   default     = false
 }
 
+variable "desired_capacity" {
+  type        = number
+  description = "Number of instances we'd like running"
+  default     = 1
+}
+
 variable "environment" {
   type        = string
   description = "Environment for web application resources"
   default     = "nonprod"
+}
+
+variable "max_size" {
+  type        = number
+  description = "Maximum acceptable capacity"
+  default     = 9
+}
+
+variable "min_size" {
+  type        = number
+  description = "Minimum acceptable capacity"
+  default     = 0
 }
 
 variable "project" {

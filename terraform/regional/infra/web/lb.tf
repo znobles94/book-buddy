@@ -1,5 +1,5 @@
 resource "aws_lb" "book-buddy" {
-  name                       = "book-buddy"
+  name                       = "${var.project}-${var.environment}-alb"
   internal                   = false
   load_balancer_type         = "application"
   enable_deletion_protection = var.deletion_protection == true ? true : false

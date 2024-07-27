@@ -17,9 +17,9 @@ resource "aws_launch_template" "book-buddy" {
 
 resource "aws_autoscaling_group" "book-buddy" {
   name                = "book-buddy"
-  max_size            = 1
-  min_size            = 0
-  desired_capacity    = 0
+  max_size            = var.max_size
+  min_size            = var.min_size
+  desired_capacity    = var.desired_capacity
   vpc_zone_identifier = data.aws_subnets.default.ids
   target_group_arns   = [aws_lb_target_group.app.arn]
   launch_template {
