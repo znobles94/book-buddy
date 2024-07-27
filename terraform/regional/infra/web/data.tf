@@ -7,9 +7,10 @@ data "aws_vpc" "default" {
   }
 }
 
-data "aws_subnet" "default" {
+data "aws_subnets" "default" {
   tags = {
     Environment = local.environment
     Project     = "Book-Buddy"
+    Role        = "Private-Subnet"
   }
 }

@@ -16,15 +16,15 @@ resource "aws_launch_template" "book-buddy" {
 }
 
 resource "aws_autoscaling_group" "book-buddy" {
-  name = "book-buddy"
-  max_size           = 1
-  min_size           = 0
-  desired_capacity   = 0
+  name                = "book-buddy"
+  max_size            = 1
+  min_size            = 0
+  desired_capacity    = 0
+  vpc_zone_identifier = data.aws_subnets.default.ids
   launch_template {
     id      = aws_launch_template.book-buddy.id
     version = "$Latest"
   }
-  vpc_zone_identifier = [ data.aws_subnet.default.id ]
   tag {
     key                 = "Project"
     value               = var.project
@@ -43,12 +43,12 @@ resource "aws_lb" "book-buddy" {
   load_balancer_type         = "application"
   enable_deletion_protection = var.deletion_protection == true ? true : false
   security_groups            = [aws_security_group.lb.id]
-  subnets                    = [data.aws_subnet.default.id]
+  subnets                    = data.aws_subnets.default.ids
 
   access_logs {
     bucket  = aws_s3_bucket.lb-logs.id
-    prefix  = "${var.project}-${var.environment}-lb"
     enabled = true
   }
-  tags = local.tags
+  tags       = local.tags
+  depends_on = [aws_s3_bucket_policy.lb-policy]
 }
