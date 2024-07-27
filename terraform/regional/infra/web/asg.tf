@@ -21,6 +21,7 @@ resource "aws_autoscaling_group" "book-buddy" {
   min_size            = 0
   desired_capacity    = 0
   vpc_zone_identifier = data.aws_subnets.default.ids
+  target_group_arns   = [aws_lb_target_group.app.arn]
   launch_template {
     id      = aws_launch_template.book-buddy.id
     version = "$Latest"
@@ -37,18 +38,26 @@ resource "aws_autoscaling_group" "book-buddy" {
   }
 }
 
-resource "aws_lb" "book-buddy" {
-  name                       = "book-buddy"
-  internal                   = false
-  load_balancer_type         = "application"
-  enable_deletion_protection = var.deletion_protection == true ? true : false
-  security_groups            = [aws_security_group.lb.id]
-  subnets                    = data.aws_subnets.default.ids
+resource "aws_autoscaling_policy" "scale-up" {
+  name                   = "scale-up"
+  scaling_adjustment     = 3
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.book-buddy.name
+}
 
-  access_logs {
-    bucket  = aws_s3_bucket.lb-logs.id
-    enabled = true
+resource "aws_cloudwatch_metric_alarm" "cpu-up" {
+  alarm_name          = "cpu-up"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "3"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "70"
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.book-buddy.name
   }
-  tags       = local.tags
-  depends_on = [aws_s3_bucket_policy.lb-policy]
+  alarm_description = "Monitor for CPU spikes"
+  alarm_actions     = [aws_autoscaling_policy.scale-up.arn]
 }
