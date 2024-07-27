@@ -35,7 +35,7 @@ resource "aws_autoscaling_group" "book-buddy" {
     id      = aws_launch_template.book-buddy.id
     version = "$Latest"
   }
-//  tags = local.tags
+  //  tags = local.tags
 }
 
 /*
@@ -43,7 +43,7 @@ resource "aws_lb" "book-buddy" {
   name                       = "book-buddy"
   internal                   = false
   load_balancer_type         = "application"
-  enable_deletion_protection = false
+  enable_deletion_protection = var.deletion_protection == true ? true : false
 
   access_logs {
 
