@@ -1,14 +1,5 @@
 ### This TF creates web instance resources
 
-locals {
-  default_tags = {
-    Project     = "Book-Buddy"
-    Environment = "Production"
-  }
-
-  tags = merge(local.default_tags, var.additional_tags)
-}
-
 /*
 data "aws_ami" "ubuntu" {
 // ami-05e06910b85180aeb
@@ -35,19 +26,31 @@ resource "aws_autoscaling_group" "book-buddy" {
     id      = aws_launch_template.book-buddy.id
     version = "$Latest"
   }
-  //  tags = local.tags
+  vpc_zone_identifier = data.aws_subnet.default.id
+  tag {
+    key                 = "Project"
+    value               = var.project
+    propagate_at_launch = true
+  }
+  tag {
+    key                 = "Environment"
+    value               = var.environment
+    propagate_at_launch = true
+  }
 }
 
-/*
 resource "aws_lb" "book-buddy" {
   name                       = "book-buddy"
   internal                   = false
   load_balancer_type         = "application"
   enable_deletion_protection = var.deletion_protection == true ? true : false
+  security_groups            = [aws_security_group.lb.id]
+  subnets                    = [data.aws_subnet.default.id]
 
   access_logs {
-
+    bucket  = aws_s3_bucket.lb-logs.id
+    prefix  = "${var.project}-${var.environment}-lb"
+    enabled = true
   }
   tags = local.tags
 }
-*/
