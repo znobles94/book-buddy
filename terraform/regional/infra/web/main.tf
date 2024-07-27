@@ -18,7 +18,7 @@ resource "aws_launch_template" "book-buddy" {
 resource "aws_autoscaling_group" "book-buddy" {
   name = "book-buddy"
   // We can expand this further later
-  availability_zones = ["us-west-2a"]
+  availability_zones = [ data.aws_subnet.default.availability_zone ]
   max_size           = 1
   min_size           = 0
   desired_capacity   = 0
@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "book-buddy" {
     id      = aws_launch_template.book-buddy.id
     version = "$Latest"
   }
-  vpc_zone_identifier = data.aws_subnet.default.id
+  vpc_zone_identifier = [ data.aws_subnet.default.id ]
   tag {
     key                 = "Project"
     value               = var.project
