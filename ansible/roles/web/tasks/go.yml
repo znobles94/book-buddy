@@ -1,0 +1,31 @@
+# go installation
+---
+- name: Go Installation
+  hosts: localhost
+  connection: local
+  vars:
+    - version: 1.22.5
+  tasks:
+    - name: Check for go installation
+      stat:
+        path: /usr/local/go
+      register: go_installation
+
+    - name: Download go tarball
+      command: wget https://go.dev/dl/go{{version}}.linux-386.tar.gz
+      when: not go_installation
+
+    - name: Extract go
+      command: tar -C /usr/local -xzf go{{version}}.linux-386.tar.gz
+      become: true
+
+    - name: Remove tarball
+      shell: rm -rf go{{version}}.linux-386.tar.gz*
+
+    - name: Set global PATH
+      ansible.builtin.copy:
+        src: /etc/environment
+        dest: /etc/environment
+        owner: root
+        group: root
+        mode: '0755'

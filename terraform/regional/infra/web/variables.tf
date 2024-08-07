@@ -13,7 +13,7 @@ variable "deletion_protection" {
 variable "desired_capacity" {
   type        = number
   description = "Number of instances we'd like running"
-  default     = 1
+  default     = 0
 }
 
 variable "environment" {
@@ -25,7 +25,7 @@ variable "environment" {
 variable "max_size" {
   type        = number
   description = "Maximum acceptable capacity"
-  default     = 9
+  default     = 0
 }
 
 variable "min_size" {
