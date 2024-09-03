@@ -2,7 +2,7 @@
 ### Purpose
 The purpose of this project is to have a highly-scalable book-listing application that can be set up without much hassle.
 
-It's a custom request by a friend for a book site for a specific purpose, but you're welcome to use it if you'd like.
+It's a custom request by a friend for a book site for a specific purpose to be delivered by EOY 2024, but you're welcome to use it if you'd like.
 
 ### Current state
 Working:
